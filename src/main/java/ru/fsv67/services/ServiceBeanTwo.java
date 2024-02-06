@@ -2,10 +2,7 @@ package ru.fsv67.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.fsv67.aspects.RecoverException;
 import ru.fsv67.aspects.Time;
-
-import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +25,16 @@ public class ServiceBeanTwo {
         }
     }
 
-    @RecoverException
-    public void getMessageException() {
-        throw new NoSuchElementException("Exception Other");
+    public void getMessageException() throws Exception {
+        int res = 5 + 10;
+        Thread.sleep(2000);
+
+        getError();
+
+        System.out.println(res);
+    }
+
+    private void getError() throws Exception {
+        throw new Exception("error");
     }
 }

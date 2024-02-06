@@ -28,9 +28,14 @@ public class AspectRunnable {
     }
 
     @Around("beansAnnotatedWith() || methodsAnnotatedWith()")
-    public Object getStringAspect(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object getStringAspect(ProceedingJoinPoint joinPoint) {
         Long start = System.currentTimeMillis();
-        joinPoint.proceed();
+        Object result = null;
+        try {
+            result = joinPoint.proceed();
+        } catch (Throwable e) {
+            log.error("Ошибка выполнения замера времени: {} {}", e.getClass().getName(), e.getMessage());
+        }
         Long end = System.currentTimeMillis();
         log.warn(
                 "{} - {} # {} секунд",
@@ -38,23 +43,24 @@ public class AspectRunnable {
                 joinPoint.getSignature().getName(),
                 (end - start) / 1000
         );
-        return null;
+        return result;
     }
 
     @Around("methodsExceptionWith()")
     public Object getStringAspectException(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         RecoverException annotation = signature.getMethod().getAnnotation(RecoverException.class);
+        Object result = null;
         try {
-            joinPoint.proceed();
+            result = joinPoint.proceed();
         } catch (Throwable e) {
             for (int i = 0; i < annotation.noRecoverFor().length; i++) {
                 if (annotation.noRecoverFor()[i].isAssignableFrom(e.getClass())) {
                     throw e;
                 }
             }
-            log.warn(e.getClass().getName() + " " + e.getMessage());
+            log.warn("Ошибка аспекта " + e.getClass().getName() + " " + e.getMessage());
         }
-        return null;
+        return result;
     }
 }
