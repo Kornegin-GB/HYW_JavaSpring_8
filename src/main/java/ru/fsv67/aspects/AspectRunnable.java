@@ -50,7 +50,7 @@ public class AspectRunnable {
         } catch (Throwable e) {
             for (int i = 0; i < annotation.noRecoverFor().length; i++) {
                 if (annotation.noRecoverFor()[i].isAssignableFrom(e.getClass())) {
-                    throw new Throwable(e);
+                    throw e;
                 }
             }
             log.warn(e.getClass().getName() + " " + e.getMessage());

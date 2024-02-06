@@ -20,12 +20,12 @@ public class BeanOneController {
         try {
             beanOne.getMessageIllegalArgumentException();
         } catch (Throwable e) {
-            log.error(e.getMessage());
+            log.error(e.getClass().getName() + " " + e.getMessage());
         }
         try {
             beanOne.getMessageNullPointerException();
         } catch (Throwable e) {
-            log.error(e.getMessage());
+            log.error(e.getClass().getName() + " " + e.getMessage());
         }
 
     }
